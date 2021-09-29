@@ -2,6 +2,8 @@ var express = require('express');
 var router = express.Router();
 var bodyParser = require('body-parser');
 var MongoClient = require('mongodb').MongoClient;
+const { Decimal128 } = require('bson');
+var cors = require('cors');
 var db
 MongoClient.connect('mongodb+srv://badis:12345@cluster0.hycjh.mongodb.net/myFirstDatabase?retryWrites=true&w=majority', function(err, client) {
   if (err) {
@@ -70,7 +72,10 @@ router.post('/addUser', function(req, res, next) {
       .catch(error => console.error(error))
   })
 
-  router.get('/findall', function(req, res, next) {
+  router.get('/findall', cors({
+    origin: ['localhost:50542','localhost:62794/P6h3ubMu0Mg=/ws'],
+    methods: ['GET']
+  }), function(req, res, next) {
   db.collection('Hotels').find({}).toArray()
   .then(result => {
     res.send(result)
@@ -79,8 +84,8 @@ router.post('/addUser', function(req, res, next) {
   })
 
   router.get('/find/:lat/:long', function(req, res) {
-    var lat = parseFloat(req.params.lat)
-    var long = parseFloat(req.params.long)
+    var lat = Decimal128(req.params.lat)
+    var long = Decimal128(req.params.long)
   	 const cursor = db.collection('Hotels')
      .findOne({Latitude : lat,Longitude : long}).then(result=>{
        res.send(result)

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 import 'package:hotelproject/api.dart';
-
 import 'package:hotelproject/reservation.dart';
 import 'package:latlong2/latlong.dart';
 
@@ -29,60 +28,25 @@ class MapScreen extends StatefulWidget {
 }
 
 class _MapScreenState extends State<MapScreen> {
-  final ApiService apiService = ApiService();
-  final PopupController _popupController = PopupController();
-  final snackBar = SnackBar(content: Text(' Hey! I am a SnackBar message.'));
-
+  ApiService apiService;
   List<Marker> markers;
-  int pointIndex;
-  List points = [
-    LatLng(51.5, -0.09),
-    LatLng(49.8566, 3.3522),
-  ];
+  PopupController _popupController;
 
   @override
   void initState() {
-    var hotelmarkers = [];
-    var HotelsList = apiService.getHotels();
+    apiService = ApiService();
+    _popupController = PopupController();
 
-    markers = [
-      Marker(
-        anchorPos: AnchorPos.align(AnchorAlign.center),
-        height: 30,
-        width: 30,
-        point: LatLng(48.92791313673253, 2.5048828125),
-        builder: (ctx) => Icon(Icons.pin_drop),
-      ),
-      Marker(
-        anchorPos: AnchorPos.align(AnchorAlign.center),
-        height: 30,
-        width: 30,
-        point: LatLng(48.92791313673253, 2.5048828125),
-        builder: (ctx) => Icon(Icons.pin_drop),
-      ),
-      Marker(
-        anchorPos: AnchorPos.align(AnchorAlign.center),
-        height: 30,
-        width: 30,
-        point: LatLng(48.92791313673253, 2.5048828125),
-        builder: (ctx) => Icon(Icons.pin_drop),
-      ),
-      Marker(
-        anchorPos: AnchorPos.align(AnchorAlign.center),
-        height: 30,
-        width: 30,
-        point: LatLng(48.60748989475176, 2.5982666015625),
-        builder: (ctx) => Icon(Icons.pin_drop),
-      ),
-      Marker(
-        anchorPos: AnchorPos.align(AnchorAlign.center),
-        height: 30,
-        width: 30,
-        point: LatLng(48.676453707, 2.1507373),
-        builder: (ctx) => Icon(Icons.pin_drop),
-      ),
-    ];
-
+    markers = [];
+    apiService.getHotels().then((hotels) => hotels.forEach((hotel) {
+          markers.add(Marker(
+            anchorPos: AnchorPos.align(AnchorAlign.center),
+            height: 30,
+            width: 30,
+            point: LatLng(hotel.lat, hotel.long),
+            builder: (ctx) => Icon(Icons.pin_drop),
+          ));
+        }));
     super.initState();
   }
 

@@ -1,23 +1,22 @@
 import 'dart:convert';
-import 'package:hotelproject/reservation.dart';
 import 'package:http/http.dart';
 
 class Hotel {
   final String id;
   final String name;
   final int rating;
-  final double lat;
-  final double long;
+  final double latitude;
+  final double longitude;
 
-  Hotel({this.id, this.name, this.rating, this.lat, this.long});
+  Hotel({this.id, this.name, this.rating, this.latitude, this.longitude});
 
   factory Hotel.fromJson(Map<String, dynamic> json) {
     return Hotel(
       id: json['_id'] as String,
       name: json['Name'] as String,
       rating: json['Rating'] as int,
-      long: json['Long'] as double,
-      lat: json['Lat'] as double,
+      longitude: json['Longitude'] as double,
+      latitude: json['Latitude'] as double,
     );
   }
   @override
@@ -50,15 +49,18 @@ class Reservations {
 }
 
 class ApiService {
-  final String apiUrl = "http://192.168.1.72:9000";
+  final String apiUrl = "http://192.168.43.233:9000";
 
   Future<List> getHotels() async {
-    Response res = await get(Uri.parse("http://192.168.1.72:9000/findAll"));
+    Response res =
+        await get(Uri.parse("http://192.168.43.233:9000/findAll"), headers: {
+      'Access-Control-Allow-Methods': 'GET',
+      'Access-Control-Allow-Origin': '192.168.43.233:9000'
+    });
 
     if (res.statusCode == 200) {
-      List<dynamic> hotels = jsonDecode(res.body);
-
       print(res.body);
+      List<dynamic> hotels = jsonDecode(res.body);
       return hotels;
     } else {
       throw "Failed to load cases list";
